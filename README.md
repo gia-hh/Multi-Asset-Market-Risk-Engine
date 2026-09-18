@@ -34,7 +34,7 @@ The engine implements:
 
 ---
 
-# 2. Latest Real-Market Results
+## 2. Latest Real-Market Results
 
 Latest live run:
 
@@ -51,9 +51,7 @@ Aligned observations:      4,891
 
 The common portfolio history begins in 2007 because some portfolio ETFs, particularly HYG, did not have observations throughout the full requested period.
 
----
-
-## Current Risk Estimates
+### Current Risk Estimates
 
 | Model                 |     99% VaR | 99% Expected Shortfall |
 | --------------------- | ----------: | ---------------------: |
@@ -86,13 +84,13 @@ The larger difference in Expected Shortfall reflects greater sensitivity to deep
 
 ---
 
-# 3. Main Finding: Calibration Changes Across Regimes
+## 3. Main Finding: Calibration Changes Across Regimes
 
 The most important result is not that one model produces the highest VaR.
 
 It is that **both rolling VaR models exhibit statistically meaningful calibration problems over the full historical sample**, even though their most recent 250-day performance falls within a conventional green-zone range.
 
-## Full-History Backtesting
+### Full-History Backtesting
 
 | Model                 | Forecasts | Exceptions | Exception Rate | Kupiec p-value | Christoffersen p-value |
 | --------------------- | --------: | ---------: | -------------: | -------------: | ---------------------: |
@@ -124,7 +122,7 @@ This is treated as a **model-risk finding**, not something to hide or recalibrat
 
 ---
 
-# 4. Recent 250-Day Performance
+## 4. Recent 250-Day Performance
 
 The full-sample result differs from the most recent evaluation period.
 
@@ -155,7 +153,7 @@ The project intentionally reports both.
 
 ---
 
-# 5. Illustrative Portfolio
+## 5. Illustrative Portfolio
 
 The engine uses an illustrative $100 million portfolio:
 
@@ -187,9 +185,9 @@ This is a risk-measurement convention, not a compounded investment backtest.
 
 ---
 
-# 6. Data
+## 6. Data
 
-## Live Mode
+### Live Mode
 
 Live mode downloads adjusted daily ETF prices from Yahoo Finance through:
 
@@ -244,9 +242,7 @@ Asset returns are never forward-filled.
 
 > `live` means that real historical market data are retrieved online at runtime. It does **not** mean intraday or institutional real-time market data.
 
----
-
-## Synthetic Mode
+### Synthetic Mode
 
 A deterministic synthetic dataset is included for:
 
@@ -265,7 +261,7 @@ Synthetic outputs must **not** be interpreted as evidence about real financial m
 
 ---
 
-# 7. Forecast Timing and Leakage Control
+## 7. Forecast Timing and Leakage Control
 
 The central implementation rule is:
 
@@ -274,9 +270,10 @@ The central implementation rule is:
 For Historical Simulation:
 
 ```math
-\operatorname{VaR}_{t,0.99}
+\mathrm{VaR}_{t,0.99}
 =
-Q_{0.99}\left(
+Q_{0.99}
+\left(
 Loss_{t-250},
 \ldots,
 Loss_{t-1}
@@ -311,7 +308,7 @@ Automated tests verify that:
 
 ---
 
-# 8. Historical Simulation
+## 8. Historical Simulation
 
 Historical Simulation estimates the empirical 99th percentile of prior portfolio losses without imposing a parametric return distribution.
 
@@ -336,17 +333,18 @@ A major limitation is that a trailing 250-day sample may respond slowly to abrup
 
 ---
 
-# 9. Expected Shortfall
+## 9. Expected Shortfall
 
 For positive loss \(L\):
 
 ```math
-\operatorname{ES}_{\alpha}
+\mathrm{ES}_{\alpha}
 =
-E\left[
+E
+\left[
 L
 \mid
-L > \operatorname{VaR}_{\alpha}
+L > \mathrm{VaR}_{\alpha}
 \right]
 ```
 
@@ -355,9 +353,9 @@ Expected Shortfall measures the average loss conditional on entering the VaR tai
 The implementation checks that:
 
 ```math
-\operatorname{ES}_{\alpha}
+\mathrm{ES}_{\alpha}
 \ge
-\operatorname{VaR}_{\alpha}
+\mathrm{VaR}_{\alpha}
 ```
 
 under the project's positive-loss convention.
@@ -373,7 +371,7 @@ illustrates why reporting VaR alone can materially understate the severity of lo
 
 ---
 
-# 10. Gaussian Monte Carlo
+## 10. Gaussian Monte Carlo
 
 Gaussian Monte Carlo:
 
@@ -393,7 +391,7 @@ This framework provides a transparent parametric benchmark but imposes relativel
 
 ---
 
-# 11. Student-t Monte Carlo
+## 11. Student-t Monte Carlo
 
 The Student-t model uses heavier-tailed standardized innovations.
 
@@ -405,12 +403,15 @@ T_{\nu}
 t_{\nu}
 ```
 
-with \(\nu>2\):
+with \(\nu > 2\):
 
 ```math
-\operatorname{Var}(T_{\nu})
+\mathrm{Var}
+\left(
+T_{\nu}
+\right)
 =
-\frac{\nu}{\nu-2}
+\frac{\nu}{\nu - 2}
 ```
 
 The implementation therefore standardizes each innovation using:
@@ -420,7 +421,7 @@ Z
 =
 T_{\nu}
 \sqrt{
-\frac{\nu-2}{\nu}
+\frac{\nu - 2}{\nu}
 }
 ```
 
@@ -445,7 +446,7 @@ The heavier-tailed specification produces a particularly visible increase in Exp
 
 ---
 
-# 12. GARCH-Filtered Historical Simulation
+## 12. GARCH-Filtered Historical Simulation
 
 A Gaussian GARCH(1,1) model is estimated on an initial:
 
@@ -503,7 +504,7 @@ indicates highly persistent conditional volatility in the fitted initial sample.
 
 ---
 
-# 13. Stress Analysis
+## 13. Stress Analysis
 
 Instead of selecting an arbitrary crisis year, the engine searches the available history for the **250-trading-day window with the highest realized portfolio volatility**.
 
@@ -528,7 +529,7 @@ The selected window naturally spans the Global Financial Crisis.
 Relative to the latest 250-day Historical Simulation VaR:
 
 ```math
-\frac{3.594\text{M}}{1.329\text{M}}
+\frac{3.594\mathrm{M}}{1.329\mathrm{M}}
 \approx
 2.70
 ```
@@ -541,7 +542,7 @@ This is a historical scenario comparison, not a forecast that another crisis wou
 
 ---
 
-# 14. Crisis Diagnostics
+## 14. Crisis Diagnostics
 
 The project also examines several historically stressed periods.
 
@@ -571,7 +572,7 @@ The project does not shorten the training requirement solely to generate a 2008 
 
 ---
 
-# 15. Liquidity-Adjusted VaR
+## 15. Liquidity-Adjusted VaR
 
 Liquidity risk is modeled using **illustrative asset-class assumptions** for:
 
@@ -583,16 +584,23 @@ These are scenario inputs, not estimated institutional execution costs.
 The modeled liquidity cost for a position is based on:
 
 ```math
-LiquidityCost_i
+LC_i
 =
 0.5
 \times
-Spread_i
+S_i
 \times
-Notional_i
+N_i
 \times
-\sqrt{Days_i}
+\sqrt{D_i}
 ```
+
+where:
+
+* \(LC_i\) is modeled liquidity cost;
+* \(S_i\) is the assumed bid-ask spread;
+* \(N_i\) is position notional;
+* \(D_i\) is the assumed liquidation horizon in days.
 
 Three scenarios are evaluated.
 
@@ -610,9 +618,9 @@ The severe scenario should not be interpreted as an empirically calibrated estim
 
 ---
 
-# 16. Backtesting Framework
+## 16. Backtesting Framework
 
-## Kupiec Unconditional Coverage Test
+### Kupiec Unconditional Coverage Test
 
 The Kupiec test asks whether the frequency of VaR exceptions is consistent with the nominal exception probability.
 
@@ -642,9 +650,7 @@ Kupiec p = 0.0314
 
 Both reject correct unconditional coverage at the conventional 5% significance level.
 
----
-
-## Christoffersen Independence Test
+### Christoffersen Independence Test
 
 The Christoffersen test evaluates whether exceptions arrive independently through time.
 
@@ -664,9 +670,7 @@ This is consistent with a common limitation of risk models:
 
 > extreme losses tend to arrive in clusters during abrupt volatility regimes rather than independently at a constant probability.
 
----
-
-## Conditional Coverage
+### Conditional Coverage
 
 Combining exception frequency and independence gives:
 
@@ -684,7 +688,7 @@ The project treats this as substantive evidence of model limitations rather than
 
 ---
 
-# 17. Basel-Style Traffic-Light Diagnostic
+## 17. Basel-Style Traffic-Light Diagnostic
 
 The conventional:
 
@@ -722,15 +726,15 @@ and does not claim formal regulatory certification.
 
 ---
 
-# 18. What the Backtest Results Mean
+## 18. What the Backtest Results Mean
 
-The backtesting results illustrate an important distinction:
+The backtesting results illustrate an important distinction.
 
-### Recent model behavior
+### Recent Model Behavior
 
 Both models record only two exceptions over the most recent 250 forecasts.
 
-### Long-run model behavior
+### Long-Run Model Behavior
 
 Across nearly two decades containing multiple volatility regimes:
 
@@ -746,7 +750,7 @@ This is a model-risk result rather than evidence that either methodology is univ
 
 ---
 
-# 19. Why the Models Differ
+## 19. Why the Models Differ
 
 Each model answers the same tail-risk question using different assumptions.
 
@@ -754,11 +758,11 @@ Each model answers the same tail-risk question using different assumptions.
 
 Preserves the empirical distribution of a rolling historical window.
 
-Strength:
+**Strength**
 
 * few parametric assumptions.
 
-Limitation:
+**Limitation**
 
 * slow adaptation to sudden regime changes.
 
@@ -766,11 +770,11 @@ Limitation:
 
 Uses an estimated covariance structure with Gaussian shocks.
 
-Strength:
+**Strength**
 
 * transparent and computationally efficient.
 
-Limitation:
+**Limitation**
 
 * relatively light tails.
 
@@ -778,11 +782,11 @@ Limitation:
 
 Uses heavier-tailed standardized shocks.
 
-Strength:
+**Strength**
 
 * greater tail flexibility.
 
-Limitation:
+**Limitation**
 
 * results depend on the chosen degrees of freedom.
 
@@ -790,11 +794,11 @@ Limitation:
 
 Combines conditional volatility with historical standardized shocks.
 
-Strength:
+**Strength**
 
 * explicitly responds to volatility clustering.
 
-Limitation:
+**Limitation**
 
 * depends on GARCH specification and initial parameter estimation.
 
@@ -802,11 +806,11 @@ Limitation:
 
 Uses an empirically severe historical window.
 
-Strength:
+**Strength**
 
 * illustrates risk under observed stressed conditions.
 
-Limitation:
+**Limitation**
 
 * historical stress is not necessarily representative of a future crisis.
 
@@ -814,11 +818,11 @@ Limitation:
 
 Adds scenario-based liquidation costs.
 
-Strength:
+**Strength**
 
 * makes liquidity assumptions visible.
 
-Limitation:
+**Limitation**
 
 * current spread and liquidation inputs are illustrative rather than estimated from proprietary execution data.
 
@@ -828,7 +832,7 @@ Differences between them are treated as information about **model risk**.
 
 ---
 
-# 20. Repository Structure
+## 20. Repository Structure
 
 ```text
 .
@@ -882,7 +886,7 @@ Differences between them are treated as information about **model risk**.
 
 ---
 
-# 21. Installation
+## 21. Installation
 
 Python 3.10+ is recommended.
 
@@ -910,9 +914,9 @@ pip install -r requirements.txt
 
 ---
 
-# 22. Running the Project
+## 22. Running the Project
 
-## Offline Software Validation
+### Offline Software Validation
 
 ```bash
 python run_pipeline.py --data-mode synthetic
@@ -930,9 +934,7 @@ Use it to validate:
 
 Do not quote synthetic outputs as market results.
 
----
-
-## Real Historical Market Analysis
+### Real Historical Market Analysis
 
 ```bash
 python run_pipeline.py --data-mode live
@@ -963,7 +965,7 @@ output/tables/run_metadata.csv
 
 ---
 
-# 23. Automated Tests
+## 23. Automated Tests
 
 Run:
 
@@ -991,7 +993,7 @@ The goal is to test both numerical implementation and research-design assumption
 
 ---
 
-# 24. Generated Outputs
+## 24. Generated Outputs
 
 Main result tables:
 
@@ -1023,7 +1025,7 @@ output/figures/liquidity_scenarios.png
 
 ---
 
-# 25. Limitations
+## 25. Limitations
 
 The project deliberately keeps several boundaries visible.
 
@@ -1046,7 +1048,7 @@ These limitations are treated as part of the model-risk analysis rather than hid
 
 ---
 
-# 26. What This Project Demonstrates
+## 26. What This Project Demonstrates
 
 The project demonstrates:
 
