@@ -273,22 +273,21 @@ The central implementation rule is:
 
 For Historical Simulation:
 
-$$
-VaR_{t,0.99}
+```math
+\operatorname{VaR}_{t,0.99}
 =
-Q_{0.99}
-\left(
+Q_{0.99}\left(
 Loss_{t-250},
 \ldots,
 Loss_{t-1}
 \right)
-$$
+```
 
 The resulting forecast is then evaluated against:
 
-$$
+```math
 Loss_t
-$$
+```
 
 The global sign convention is:
 
@@ -341,19 +340,25 @@ A major limitation is that a trailing 250-day sample may respond slowly to abrup
 
 For positive loss \(L\):
 
-$$
-ES_\alpha
+```math
+\operatorname{ES}_{\alpha}
 =
-E[L \mid L > VaR_\alpha]
-$$
+E\left[
+L
+\mid
+L > \operatorname{VaR}_{\alpha}
+\right]
+```
 
 Expected Shortfall measures the average loss conditional on entering the VaR tail.
 
 The implementation checks that:
 
-$$
-ES \geq VaR
-$$
+```math
+\operatorname{ES}_{\alpha}
+\ge
+\operatorname{VaR}_{\alpha}
+```
 
 under the project's positive-loss convention.
 
@@ -394,26 +399,30 @@ The Student-t model uses heavier-tailed standardized innovations.
 
 For:
 
-$$
-T_\nu \sim t_\nu
-$$
+```math
+T_{\nu}
+\sim
+t_{\nu}
+```
 
 with \(\nu>2\):
 
-$$
-Var(T_\nu)
+```math
+\operatorname{Var}(T_{\nu})
 =
 \frac{\nu}{\nu-2}
-$$
+```
 
 The implementation therefore standardizes each innovation using:
 
-$$
+```math
 Z
 =
-T_\nu
-\sqrt{\frac{\nu-2}{\nu}}
-$$
+T_{\nu}
+\sqrt{
+\frac{\nu-2}{\nu}
+}
+```
 
 before applying the target covariance structure.
 
@@ -446,7 +455,7 @@ A Gaussian GARCH(1,1) model is estimated on an initial:
 
 using:
 
-$$
+```math
 \sigma_t^2
 =
 \omega
@@ -454,7 +463,7 @@ $$
 \alpha r_{t-1}^2
 +
 \beta \sigma_{t-1}^2
-$$
+```
 
 Latest fitted parameters:
 
@@ -484,9 +493,11 @@ This design captures volatility clustering while maintaining an empirical shock 
 
 The persistence estimate:
 
-$$
-\alpha + \beta \approx 0.946
-$$
+```math
+\alpha + \beta
+\approx
+0.946
+```
 
 indicates highly persistent conditional volatility in the fitted initial sample.
 
@@ -505,22 +516,22 @@ The latest run selected:
 with:
 
 ```text
-Observations:                  250
+Observations:                    250
 Annualized realized volatility: 22.51%
 
-99% Stress VaR:               $3,593,802
-99% Stress ES:                $4,283,129
+99% Stress VaR:                 $3,593,802
+99% Stress ES:                  $4,283,129
 ```
 
 The selected window naturally spans the Global Financial Crisis.
 
 Relative to the latest 250-day Historical Simulation VaR:
 
-$$
-\frac{3.594M}{1.329M}
+```math
+\frac{3.594\text{M}}{1.329\text{M}}
 \approx
 2.70
-$$
+```
 
 so the stressed-window VaR is approximately:
 
@@ -571,7 +582,7 @@ These are scenario inputs, not estimated institutional execution costs.
 
 The modeled liquidity cost for a position is based on:
 
-$$
+```math
 LiquidityCost_i
 =
 0.5
@@ -581,7 +592,7 @@ Spread_i
 Notional_i
 \times
 \sqrt{Days_i}
-$$
+```
 
 Three scenarios are evaluated.
 
@@ -607,9 +618,13 @@ The Kupiec test asks whether the frequency of VaR exceptions is consistent with 
 
 At 99% VaR:
 
-$$
-p = 0.01
-$$
+```math
+p
+=
+1 - 0.99
+=
+0.01
+```
 
 The full-sample results show:
 
@@ -850,8 +865,6 @@ Differences between them are treated as information about **model risk**.
     ├── tables/
     │   ├── run_metadata.csv
     │   ├── data_quality.csv
-    │   ├── hs_backtest.csv
-    │   ├── garch_fhs_backtest.csv
     │   ├── backtest_summary.csv
     │   ├── monte_carlo_snapshot.csv
     │   ├── garch_parameters.csv
